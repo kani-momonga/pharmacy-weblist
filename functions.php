@@ -58,7 +58,7 @@ function loginUser($username, $password) {
 
         if ($user && password_verify($password, $user['password'])) {
             if ($user['approved']) {
-                session_start();
+                //session_start();
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
