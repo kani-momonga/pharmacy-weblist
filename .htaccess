@@ -1,0 +1,14 @@
+# mail_config.json へのアクセスを禁止
+<Files "mail_config.json">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# pharmacy.db へのアクセスを禁止
+<Files "pharmacy.db">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# ディレクトリの一覧表示を無効にする
+Options -Indexes
