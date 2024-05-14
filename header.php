@@ -11,9 +11,8 @@ function renderMenu() {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="pharmacy_list.php">薬局一覧</a></li>
-                        <li class="nav-item"><a class="nav-link" href="user_profile.php">プロフィール</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php">ホーム</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.php">薬局一覧</a></li>
+                        <li class="nav-item"><a class="nav-link" href="user_profile.php">薬局管理</a></li>
                         <li class="nav-item"><a class="nav-link" href="logout.php">ログアウト</a></li>
                     </ul>
                 </div>
@@ -28,9 +27,9 @@ function renderMenu() {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="index.php">ホーム</a></li>
                         <li class="nav-item"><a class="nav-link" href="user_login.php">ログイン</a></li>
                         <li class="nav-item"><a class="nav-link" href="user_register.php">新規登録</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php">ホーム</a></li>
                     </ul>
                 </div>
             </div>
