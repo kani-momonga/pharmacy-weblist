@@ -1,42 +1,66 @@
 <?php
 $title = "管理者ログイン";
 include 'header.php';
+require_once '../functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    $result = loginAdmin($username, $password);
+    if ($result === true) {
+        setFlashMessage("ログインしました。");
+        header("Location: admin_dashboard.php");
+        exit;
+    } else {
+        $error_message = $result;
+    }
+}
+
+// 管理者ログイン機能
+function loginAdmin($username, $password) {
+    $db = connectDb();
     try {
-        $db = new PDO('sqlite:' . __DIR__ . '/../pharmacy.db');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
         $stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND role = 'admin'");
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
+            session_start();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
-            header("Location: admin_dashboard.php");
-            exit;
+            return true;
         } else {
-            setFlashMessage("ユーザー名またはパスワードが無効です。");
-            header("Location: admin_login.php");
+            return "無効なユーザー名またはパスワードです。";
         }
-
     } catch (PDOException $e) {
-        echo "エラー: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 ?>
-<h1>管理者ログイン</h1>
-<form method="POST" action="">
-    <label for="username">ユーザー名:</label>
-    <input type="text" name="username" required><br>
-    <label for="password">パスワード:</label>
-    <input type="password" name="password" required><br>
-    <button type="submit">ログイン</button>
-</form>
+
+<div class="container mt-4">
+    <h1 class="mb-4">管理者ログイン</h1>
+    
+    <?php if (isset($error_message)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+    <?php endif; ?>
+
+    <form method="POST" action="">
+        <div class="mb-3">
+            <label for="username" class="form-label">ユーザー名</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">ログイン</button>
+    </form>
+</div>
+
 </body>
 </html>

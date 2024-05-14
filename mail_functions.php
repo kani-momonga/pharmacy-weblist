@@ -2,6 +2,10 @@
 
 function sendMail($to, $subject, $message, $additionalHeaders = '') {
     $mailConfig = json_decode(file_get_contents(__DIR__ . '/mail_config.json'), true);
+    
+    if(empty($mailConfig)){
+        return;
+    }
 
     if (!$mailConfig['enabled']) {
         return;

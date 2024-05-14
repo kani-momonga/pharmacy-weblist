@@ -12,7 +12,7 @@ $offset = ($page - 1) * PHARMACIES_PER_PAGE;
 
 // 薬局情報と関連するMeta情報をJOINして取得
 $stmt = $db->prepare("
-    SELECT p.*, m.metakey, m.subject, m.value
+    SELECT p.*, m.metakey, m.value
     FROM Pharmacies p
     LEFT JOIN PharmacyMeta m ON p.id = m.pharmacy_id
     WHERE p.approved = 1

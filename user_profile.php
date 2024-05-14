@@ -42,7 +42,7 @@ $pharmacies = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <h5 class="card-title"><?= htmlspecialchars($pharmacy['name'], ENT_QUOTES, 'UTF-8') ?></h5>
                     <p class="card-text"><strong>住所:</strong> <?= htmlspecialchars($pharmacy['address'], ENT_QUOTES, 'UTF-8') ?></p>
                     <p class="card-text"><strong>電話番号:</strong> <?= htmlspecialchars($pharmacy['phone'], ENT_QUOTES, 'UTF-8') ?></p>
-                    <p class="card-text"><strong>メール:</strong> <?= htmlspecialchars($pharmacy['email'], ENT_QUOTES, 'UTF-8') ?></p>
+                    <p class="card-text"><strong>FAX番号:</strong> <?= htmlspecialchars($pharmacy['fax'], ENT_QUOTES, 'UTF-8') ?></p>
                     <a href="user_pharmacy_edit.php?id=<?= $pharmacy['id'] ?>" class="btn btn-primary">編集</a>
                 </div>
             </div>

@@ -33,7 +33,7 @@ $metaData = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <h2 class="card-title"><?= htmlspecialchars($pharmacy['name'], ENT_QUOTES, 'UTF-8') ?></h2>
             <p class="card-text"><strong>住所:</strong> <?= htmlspecialchars($pharmacy['address'], ENT_QUOTES, 'UTF-8') ?></p>
             <p class="card-text"><strong>電話番号:</strong> <?= htmlspecialchars($pharmacy['phone'], ENT_QUOTES, 'UTF-8') ?></p>
-            <p class="card-text"><strong>メール:</strong> <?= htmlspecialchars($pharmacy['email'], ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="card-text"><strong>FAX番号:</strong> <?= htmlspecialchars($pharmacy['fax'], ENT_QUOTES, 'UTF-8') ?></p>
 
             <?php if (!empty($metaData)): ?>
                 <h5 class="card-subtitle mb-2 text-muted">追加情報</h5>
@@ -46,7 +46,7 @@ $metaData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <a href="pharmacy_list.php" class="btn btn-secondary">戻る</a>
+    <a href="index.php" class="btn btn-secondary">戻る</a>
 </div>
 
 </body>
