@@ -85,7 +85,7 @@
     - ユーザーの承認や薬局情報の編集を行います。
 
 ## ディレクトリ構造
-
+<pre>
 /project-root
   |-- pharmacy.db
   |-- setup.sql
@@ -105,7 +105,7 @@
   |-- admin_dashboard.php
   |-- admin_user_edit.php
   |-- index.php (or other main files of your project
-
+</pre>
 
 ## ライセンス
 
