@@ -8,23 +8,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $email = $_POST['email'];
 
-    // ユーザー名の重複チェック
-    $db = connectDb();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM Users WHERE username = ?");
-    $stmt->execute([$username]);
-    $userCount = $stmt->fetchColumn();
+    try {
+        // データベース接続
+        $db = connectDb();
 
-    if ($userCount > 0) {
-        $error_message = "このユーザー名は既に使用されています。";
-    } else {
-        $result = registerUser($username, $password, $email);
-        if ($result === true) {
-            setFlashMessage("ユーザー登録が完了しました。承認をお待ちください。");
-            header("Location: user_register.php");
-            exit;
+        // ユーザー名の重複チェック
+        $stmt = $db->prepare("SELECT COUNT(*) FROM Users WHERE username = ?");
+        $stmt->execute([$username]);
+        $userCount = $stmt->fetchColumn();
+
+        if ($userCount > 0) {
+            $error_message = "このユーザー名は既に使用されています。";
         } else {
-            $error_message = $result;
+            $result = registerUser($username, $password, $email);
+            if ($result === true) {
+                setFlashMessage("ユーザー登録が完了しました。承認をお待ちください。");
+                header("Location: user_register.php");
+                exit;
+            } else {
+                $error_message = $result;
+            }
         }
+    } catch (PDOException $e) {
+        $error_message = "エラー: " . $e->getMessage();
     }
 }
 ?>
