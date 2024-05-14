@@ -64,8 +64,8 @@ try {
         </tbody>
     </table>
 
-    <h2 class="mt-4">項目管理</h2>
-    <p><a href="meta_keys.php" class="btn btn-secondary">項目管理ページへ</a></p>
+    <h2 class="mt-4">追加登録項目管理</h2>
+    <p><a href="meta_keys.php" class="btn btn-secondary">追加登録項目管理ページへ</a></p>
 </div>
 
 </body>
