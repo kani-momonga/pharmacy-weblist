@@ -23,27 +23,50 @@ try {
 }
 ?>
 
-<h1>管理ダッシュボード</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">管理ダッシュボード</h1>
+    
+    <h2>ユーザー</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>ユーザー名</th>
+                <th>ステータス</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $user): ?>
+                <tr>
+                    <td><?= htmlspecialchars($user['username']) ?></td>
+                    <td><?= $user['approved'] ? '承認済み' : '保留中' ?></td>
+                    <td><a href="admin_user_edit.php?id=<?= htmlspecialchars($user['id']) ?>" class="btn btn-primary btn-sm">編集</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-<h2>ユーザー</h2>
-<ul>
-    <?php foreach ($users as $user): ?>
-        <li>
-            <?= htmlspecialchars($user['username']) ?> - 
-            <?= $user['approved'] ? '承認済み' : '保留中' ?>
-            <a href="admin_user_edit.php?id=<?= htmlspecialchars($user['id']) ?>">編集</a>
-        </li>
-    <?php endforeach; ?>
-</ul>
+    <h2 class="mt-4">薬局</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>薬局名</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($pharmacies as $pharmacy): ?>
+                <tr>
+                    <td><?= htmlspecialchars($pharmacy['name']) ?></td>
+                    <td><a href="pharmacy_edit.php?id=<?= htmlspecialchars($pharmacy['id']) ?>" class="btn btn-primary btn-sm">編集</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-<h2>薬局</h2>
-<ul>
-    <?php foreach ($pharmacies as $pharmacy): ?>
-        <li>
-            <?= htmlspecialchars($pharmacy['name']) ?>
-            <a href="pharmacy_edit.php?id=<?= htmlspecialchars($pharmacy['id']) ?>">編集</a>
-        </li>
-    <?php endforeach; ?>
-</ul>
+    <h2 class="mt-4">項目管理</h2>
+    <p><a href="meta_keys.php" class="btn btn-secondary">項目管理ページへ</a></p>
+</div>
+
 </body>
 </html>
