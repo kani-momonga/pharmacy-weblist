@@ -22,16 +22,29 @@ function registerUser($username, $password, $email) {
     $db = connectDb();
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     try {
+        /*
         $stmt = $db->prepare("INSERT INTO Users (username, password, email, role, approved) VALUES (?, ?, ?, 'user', 0)");
         $stmt->execute([$username, $hashedPassword, $email]);
+        */
+        $db->beginTransaction();
+        $stmt = $db->prepare("INSERT INTO Users (username, password, email, role, approved) VALUES (?, ?, ?, 'user', 0)");
+        $start = microtime(true);
+        $stmt->execute([$username, $hashedPassword, $email]);
+        $end = microtime(true);
+        $db->commit();
+
+        error_log("User insertion took " . ($end - $start) . " seconds");
 
         $subject = "ユーザー登録確認";
         $message = "$username 様、\n\nご登録が完了しました。管理者の承認をお待ちください。";
 
-        sendMail($email, $subject, $message);
+        //sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
-        return "エラー: " . $e->getMessage();
+        $db->rollBack();
+        return "データベースエラー: " . $e->getMessage();
+    } catch (Exception $e) {
+        return "一般エラー: " . $e->getMessage();
     }
 }
 

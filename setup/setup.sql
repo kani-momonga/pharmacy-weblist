@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS Users (
     role TEXT NOT NULL CHECK(role IN ('admin', 'user')),
     approved BOOLEAN NOT NULL DEFAULT 0
 );
+CREATE INDEX idx_username ON Users (username);
 
 CREATE TABLE IF NOT EXISTS Pharmacies (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

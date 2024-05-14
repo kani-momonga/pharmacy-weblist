@@ -30,7 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } catch (PDOException $e) {
-        $error_message = "エラー: " . $e->getMessage();
+        $error_message = "データベースエラー: " . $e->getMessage();
+    } catch (Exception $e) {
+        $error_message = "一般エラー: " . $e->getMessage();
     }
 }
 ?>
