@@ -1,4 +1,6 @@
 <?php
+$title = "ユーザー登録";
+include 'header.php';
 require_once 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -8,28 +10,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $result = registerUser($username, $password, $email);
     if ($result === true) {
-        echo "Registration successful. A confirmation email has been sent.";
+        setFlashMessage("ユーザー登録が完了しました。承認をお待ちください。");
+        header("Location: user_register.php");
+        exit;
     } else {
-        echo $result;
+        $error_message = $result;
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>User Registration</title>
-</head>
-<body>
-    <h1>User Registration</h1>
+
+<div class="container mt-4">
+    <h1 class="mb-4">ユーザー登録</h1>
+    
+    <?php if (isset($error_message)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-        <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
-        <button type="submit">Register</button>
+        <div class="mb-3">
+            <label for="username" class="form-label">ユーザー名</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">メールアドレス</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <button type="submit" class="btn btn-primary">登録</button>
     </form>
+</div>
+
 </body>
 </html>

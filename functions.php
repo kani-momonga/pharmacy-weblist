@@ -1,16 +1,18 @@
 <?php
 require_once 'mail_functions.php';
 
+// データベースに接続する関数
 function connectDb() {
     try {
         $db = new PDO('sqlite:' . __DIR__ . '/pharmacy.db');
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $db;
     } catch (PDOException $e) {
-        die("Database connection failed: " . $e->getMessage());
+        die("データベース接続に失敗しました: " . $e->getMessage());
     }
 }
 
+// フラッシュメッセージを設定する関数
 function setFlashMessage($message) {
     $_SESSION['flash_message'] = $message;
 }
@@ -23,13 +25,13 @@ function registerUser($username, $password, $email) {
         $stmt = $db->prepare("INSERT INTO Users (username, password, email, role, approved) VALUES (?, ?, ?, 'user', 0)");
         $stmt->execute([$username, $hashedPassword, $email]);
 
-        $subject = "User Registration Confirmation";
-        $message = "Dear $username,\n\nYour registration is successful. Please wait for admin approval.";
+        $subject = "ユーザー登録確認";
+        $message = "$username 様、\n\nご登録が完了しました。管理者の承認をお待ちください。";
 
         sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
@@ -49,13 +51,13 @@ function loginUser($username, $password) {
                 $_SESSION['role'] = $user['role'];
                 return true;
             } else {
-                return "Your account is not approved yet.";
+                return "アカウントがまだ承認されていません。";
             }
         } else {
-            return "Invalid username or password.";
+            return "ユーザー名またはパスワードが無効です。";
         }
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
@@ -70,13 +72,13 @@ function approveUser($userId, $approved) {
         $stmt->execute([$userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $subject = "Account Approval Status";
-        $message = "Your account has been " . ($approved ? "approved" : "disapproved") . ".";
+        $subject = "アカウント承認ステータス";
+        $message = "あなたのアカウントは " . ($approved ? "承認されました。" : "承認されませんでした。");
 
         sendMail($user['email'], $subject, $message);
         return true;
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
@@ -87,13 +89,13 @@ function registerPharmacy($name, $address, $phone, $email, $owner_id, $approved 
         $stmt = $db->prepare("INSERT INTO Pharmacies (name, address, phone, email, owner_id, approved) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $address, $phone, $email, $owner_id, $approved]);
 
-        $subject = "New Pharmacy Registration";
-        $message = "A new pharmacy has been registered and is pending approval.";
+        $subject = "新しい薬局の登録";
+        $message = "新しい薬局が登録され、承認待ちです。";
 
         sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
@@ -104,13 +106,13 @@ function editPharmacy($id, $name, $address, $phone, $email) {
         $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, email = ? WHERE id = ?");
         $stmt->execute([$name, $address, $phone, $email, $id]);
 
-        $subject = "Pharmacy Information Updated";
-        $message = "The information for the pharmacy has been updated.";
+        $subject = "薬局情報の更新";
+        $message = "薬局の情報が更新されました。";
 
         sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
@@ -122,7 +124,7 @@ function addPharmacyMeta($pharmacy_id, $metakey, $subject, $value) {
         $stmt->execute([$pharmacy_id, $metakey, $subject, $value]);
         return true;
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
@@ -134,10 +136,11 @@ function addMetaKey($metakey, $description) {
         $stmt->execute([$metakey, $description]);
         return true;
     } catch (PDOException $e) {
-        return "Error: " . $e->getMessage();
+        return "エラー: " . $e->getMessage();
     }
 }
 
+// メタキーの取得機能
 function getMetaKeys() {
     $db = connectDb();
     try {
@@ -148,8 +151,8 @@ function getMetaKeys() {
     }
 }
 
+// セットアップが完了しているか確認する関数
 function isSetupComplete() {
-    
     // データベースファイルのパス
     $dbFile = __DIR__ . '/pharmacy.db';
     // メール設定ファイルのパス

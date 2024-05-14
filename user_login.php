@@ -1,4 +1,6 @@
 <?php
+$title = "ユーザーログイン";
+include 'header.php';
 require_once 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,25 +12,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: index.php");
         exit;
     } else {
-        echo $result;
+        $error_message = $result;
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Login</title>
-</head>
-<body>
-    <h1>User Login</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">ユーザーログイン</h1>
+    
+    <?php if (isset($error_message)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-        <button type="submit">Login</button>
+        <div class="mb-3">
+            <label for="username" class="form-label">ユーザー名</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">ログイン</button>
     </form>
+</div>
+
 </body>
 </html>
