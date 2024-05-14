@@ -13,7 +13,7 @@ if (file_exists($dbFile)) {
 
 $setupSQLFile = __DIR__ . '/setup.sql';
 // データベースセットアップSQLファイルが存在するか確認
-if (!file_exists($dbFile)) {
+if (!file_exists($setupSQLFile)) {
     $_SESSION['setup_message'] = "データベースセットアップに必要なSQLファイルが存在しません。ファイルの配置をやり直してください。";
     header("Location: setup_message.php");
     exit;
