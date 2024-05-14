@@ -23,6 +23,18 @@ function deleteSetupFiles() {
     return true;
 }
 
+// ファイルの権限を600に設定
+$dbFile = __DIR__ . '/../pharmacy.db';
+$configFile = __DIR__ . '/../mail_config.json';
+
+if (file_exists($dbFile)) {
+    chmod($dbFile, 0600);
+}
+
+if (file_exists($configFile)) {
+    chmod($configFile, 0600);
+}
+
 // setup.php、initial_setup.php、setup.sqlを削除
 if (deleteSetupFiles()) {
     $_SESSION['setup_message'] = "セットアップが完了しました。セットアップスクリプトは削除されました。";

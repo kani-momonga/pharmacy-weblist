@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS PharmacyMeta (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     pharmacy_id INTEGER NOT NULL,
     metakey TEXT NOT NULL,
-    subject TEXT,
     value TEXT,
     FOREIGN KEY(pharmacy_id) REFERENCES Pharmacies(id)
 );
