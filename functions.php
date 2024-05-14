@@ -25,9 +25,8 @@ function registerUser($username, $password, $email) {
 
         $subject = "User Registration Confirmation";
         $message = "Dear $username,\n\nYour registration is successful. Please wait for admin approval.";
-        $headers = "From: no-reply@example.com\r\n";
 
-        sendMail($email, $subject, $message, $headers);
+        sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
         return "Error: " . $e->getMessage();
@@ -73,9 +72,8 @@ function approveUser($userId, $approved) {
 
         $subject = "Account Approval Status";
         $message = "Your account has been " . ($approved ? "approved" : "disapproved") . ".";
-        $headers = "From: no-reply@example.com\r\n";
 
-        sendMail($user['email'], $subject, $message, $headers);
+        sendMail($user['email'], $subject, $message);
         return true;
     } catch (PDOException $e) {
         return "Error: " . $e->getMessage();
@@ -91,9 +89,8 @@ function registerPharmacy($name, $address, $phone, $email, $owner_id, $approved 
 
         $subject = "New Pharmacy Registration";
         $message = "A new pharmacy has been registered and is pending approval.";
-        $headers = "From: no-reply@example.com\r\n";
 
-        sendMail($email, $subject, $message, $headers);
+        sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
         return "Error: " . $e->getMessage();
@@ -109,9 +106,8 @@ function editPharmacy($id, $name, $address, $phone, $email) {
 
         $subject = "Pharmacy Information Updated";
         $message = "The information for the pharmacy has been updated.";
-        $headers = "From: no-reply@example.com\r\n";
 
-        sendMail($email, $subject, $message, $headers);
+        sendMail($email, $subject, $message);
         return true;
     } catch (PDOException $e) {
         return "Error: " . $e->getMessage();

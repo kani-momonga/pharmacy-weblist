@@ -27,6 +27,7 @@ try {
         $adminUsername = $_POST['admin_username'];
         $adminPassword = $_POST['admin_password'];
         $adminEmail = $_POST['admin_email'];
+        $smtpFromEmail = $_POST['smtp_from_email'];
 
         $hashedPassword = hashPassword($adminPassword);
 
@@ -38,6 +39,7 @@ try {
         $emailEnabled = isset($_POST['email_enabled']) ? 1 : 0;
         $mailConfig = [
             'enabled' => $emailEnabled,
+            'from_email' => $smtpFromEmail,
         ];
 
         if ($emailEnabled) {
@@ -60,6 +62,7 @@ try {
     header("Location: setup_message.php");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -81,6 +84,8 @@ try {
         <label for="email_enabled">メール通知を有効にする:</label>
         <input type="checkbox" name="email_enabled" id="email_enabled" value="1"><br>
         <div id="email_settings" style="display: none;">
+            <label for="smtp_from_email">送信元メールアドレス:</label>
+            <input type="email" name="smtp_from_email"><br>
             <label for="smtp_host">SMTPホスト:</label>
             <input type="text" name="smtp_host"><br>
             <label for="smtp_port">SMTPポート:</label>
