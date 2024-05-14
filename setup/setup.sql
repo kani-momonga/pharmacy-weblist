@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Pharmacies (
     name TEXT NOT NULL,
     address TEXT NOT NULL,
     phone TEXT NOT NULL,
-    email TEXT NOT NULL,
+    fax TEXT NOT NULL,
     owner_id INTEGER NOT NULL,
     approved BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY(owner_id) REFERENCES Users(id)

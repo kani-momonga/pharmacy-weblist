@@ -106,12 +106,11 @@
 |-- mail_functions.php
 |-- functions.php
 |-- mail_config.json
-|-- pharmacy_list.php
+|-- index.php
 |-- pharmacy_details.php
 |-- user_register.php
 |-- user_login.php
 |-- pharmacy_register.php
-|-- index.php (or other main files of your project)
 </pre>
 
 ## ライセンス

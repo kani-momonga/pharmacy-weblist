@@ -33,7 +33,7 @@ foreach ($results as $row) {
             'name' => $row['name'],
             'address' => $row['address'],
             'phone' => $row['phone'],
-            'email' => $row['email'],
+            'fax' => $row['fax'],
             'meta' => []
         ];
     }
@@ -51,24 +51,25 @@ $totalPharmacies = $totalStmt->fetchColumn();
 $totalPages = ceil($totalPharmacies / PHARMACIES_PER_PAGE);
 ?>
 
-<div class="container">
-    <h1 class="mt-4 mb-4">薬局一覧</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">薬局一覧</h1>
 
     <?php foreach ($pharmacies as $pharmacy): ?>
         <div class="card mb-4">
             <div class="card-body">
-                <h2 class="card-title"><?php echo htmlspecialchars($pharmacy['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                <p class="card-text">住所: <?php echo htmlspecialchars($pharmacy['address'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p class="card-text">電話番号: <?php echo htmlspecialchars($pharmacy['phone'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <h2 class="card-title"><?= htmlspecialchars($pharmacy['name'], ENT_QUOTES, 'UTF-8') ?></h2>
+                <p class="card-text"><strong>住所:</strong> <?= htmlspecialchars($pharmacy['address'], ENT_QUOTES, 'UTF-8') ?></p>
+                <p class="card-text"><strong>電話番号:</strong> <?= htmlspecialchars($pharmacy['phone'], ENT_QUOTES, 'UTF-8') ?></p>
+                <p class="card-text"><strong>FAX番号:</strong> <?= htmlspecialchars($pharmacy['fax'], ENT_QUOTES, 'UTF-8') ?></p>
                 <?php if (!empty($pharmacy['meta'])): ?>
                     <h5 class="card-subtitle mb-2 text-muted">追加情報</h5>
                     <ul class="list-group list-group-flush">
                         <?php foreach ($pharmacy['meta'] as $meta): ?>
-                            <li class="list-group-item"><?php echo htmlspecialchars($meta['metakey'], ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($meta['value'], ENT_QUOTES, 'UTF-8'); ?></li>
+                            <li class="list-group-item"><?= htmlspecialchars($meta['metakey'], ENT_QUOTES, 'UTF-8') ?>: <?= htmlspecialchars($meta['value'], ENT_QUOTES, 'UTF-8') ?></li>
                         <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
-                <a href="pharmacy_detail.php?id=<?php echo $pharmacy['id']; ?>" class="btn btn-primary mt-3">詳細を見る</a>
+                <a href="pharmacy_details.php?id=<?= $pharmacy['id'] ?>" class="btn btn-primary mt-3">詳細を見る</a>
             </div>
         </div>
     <?php endforeach; ?>
@@ -77,21 +78,21 @@ $totalPages = ceil($totalPharmacies / PHARMACIES_PER_PAGE);
         <ul class="pagination">
             <?php if ($page > 1): ?>
                 <li class="page-item">
-                    <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="前へ">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>" aria-label="前へ">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <li class="page-item<?php if ($i == $page) echo ' active'; ?>">
-                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                <li class="page-item<?= $i == $page ? ' active' : '' ?>">
+                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
                 </li>
             <?php endfor; ?>
 
             <?php if ($page < $totalPages): ?>
                 <li class="page-item">
-                    <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="次へ">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>" aria-label="次へ">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

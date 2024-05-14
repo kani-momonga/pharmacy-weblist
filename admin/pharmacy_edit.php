@@ -19,11 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $address = $_POST['address'];
     $phone = $_POST['phone'];
-    $email = $_POST['email'];
+    $fax = $_POST['fax'];
 
     try {
-        $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, email = ? WHERE id = ?");
-        $stmt->execute([$name, $address, $phone, $email, $pharmacyId]);
+        $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, fax = ? WHERE id = ?");
+        $stmt->execute([$name, $address, $phone, $fax, $pharmacyId]);
 
         // Metaデータの更新
         foreach ($_POST['meta'] as $metakey => $value) {
@@ -86,8 +86,8 @@ $metaKeys = getMetaKeys();
             <input type="text" class="form-control" id="phone" name="phone" value="<?= htmlspecialchars($pharmacy['phone'], ENT_QUOTES, 'UTF-8') ?>" required>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">メール</label>
-            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($pharmacy['email'], ENT_QUOTES, 'UTF-8') ?>" required>
+            <label for="fax" class="form-label">FAX</label>
+            <input type="text" class="form-control" id="fax" name="fax" value="<?= htmlspecialchars($pharmacy['fax'], ENT_QUOTES, 'UTF-8') ?>" required>
         </div>
         
         <h2 class="mt-4">追加情報</h2>
