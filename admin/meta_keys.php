@@ -1,7 +1,6 @@
 <?php
-$title = "メタキー管理";
+$title = "追加項目管理";
 include 'header.php';
-
 require_once '../functions.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -17,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result === true) {
         setFlashMessage("追加項目が追加されました。");
         header("Location: meta_keys.php");
+        exit;
     } else {
         echo $result;
     }
@@ -25,20 +25,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $metaKeys = getMetaKeys();
 ?>
 
-<h1>登録項目名管理</h1>
-<form method="POST" action="">
-    <label for="metakey">項目名:</label>
-    <input type="text" name="metakey" required><br>
-    <label for="description">説明:</label>
-    <input type="text" name="description" required><br>
-    <button type="submit">追加</button>
-</form>
+<div class="container mt-4">
+    <h1 class="mb-4">追加項目管理</h1>
+    <form method="POST" action="">
+        <div class="mb-3">
+            <label for="metakey" class="form-label">メタキー</label>
+            <input type="text" class="form-control" id="metakey" name="metakey" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">説明</label>
+            <input type="text" class="form-control" id="description" name="description" required>
+        </div>
+        <button type="submit" class="btn btn-primary">追加</button>
+    </form>
 
-<h2>既存の登録項目</h2>
-<ul>
-    <?php foreach ($metaKeys as $metaKey): ?>
-        <li><?= htmlspecialchars($metaKey['metakey']) ?> - <?= htmlspecialchars($metaKey['description']) ?></li>
-    <?php endforeach; ?>
-</ul>
+    <h2 class="mt-4">既存の追加項目</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>追加項目</th>
+                <th>説明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($metaKeys as $metaKey): ?>
+                <tr>
+                    <td><?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars($metaKey['description'], ENT_QUOTES, 'UTF-8') ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>

@@ -60,12 +60,11 @@ $totalPages = ceil($totalPharmacies / PHARMACIES_PER_PAGE);
                 <h2 class="card-title"><?php echo htmlspecialchars($pharmacy['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                 <p class="card-text">住所: <?php echo htmlspecialchars($pharmacy['address'], ENT_QUOTES, 'UTF-8'); ?></p>
                 <p class="card-text">電話番号: <?php echo htmlspecialchars($pharmacy['phone'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p class="card-text">メール: <?php echo htmlspecialchars($pharmacy['email'], ENT_QUOTES, 'UTF-8'); ?></p>
                 <?php if (!empty($pharmacy['meta'])): ?>
                     <h5 class="card-subtitle mb-2 text-muted">追加情報</h5>
                     <ul class="list-group list-group-flush">
                         <?php foreach ($pharmacy['meta'] as $meta): ?>
-                            <li class="list-group-item"><?php echo htmlspecialchars($meta['subject'], ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($meta['value'], ENT_QUOTES, 'UTF-8'); ?></li>
+                            <li class="list-group-item"><?php echo htmlspecialchars($meta['metakey'], ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($meta['value'], ENT_QUOTES, 'UTF-8'); ?></li>
                         <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>

@@ -16,7 +16,6 @@ function renderMenu() {
                             <li class="nav-item"><a class="nav-link" href="admin_dashboard.php">ダッシュボード</a></li>
                             <li class="nav-item"><a class="nav-link" href="pharmacy_add.php">薬局追加</a></li>
                             <li class="nav-item"><a class="nav-link" href="meta_keys.php">追加項目管理</a></li>
-                            <li class="nav-item"><a class="nav-link" href="admin_user_edit.php">ユーザー編集</a></li>
                             <li class="nav-item"><a class="nav-link" href="../index.php">ホーム</a></li>
                             <li class="nav-item"><a class="nav-link" href="../logout.php">ログアウト</a></li>
                         </ul>
