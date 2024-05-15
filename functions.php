@@ -29,35 +29,35 @@ function registerUser($username, $password, $email) {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $isSuccess = false;
     try {
-        /*
-        $stmt = $db->prepare("INSERT INTO Users (username, password, email, role, approved) VALUES (?, ?, ?, 'user', 0)");
-        $stmt->execute([$username, $hashedPassword, $email]);
-        */
+        // ユーザー名の重複チェック
+        $stmt = $db->prepare("SELECT COUNT(*) FROM Users WHERE username = ?");
+        $stmt->execute([$username]);
+        $userCount = $stmt->fetchColumn();
+
+        if ($userCount > 0) {
+            return "このユーザー名は既に使用されています。";
+        }
 
         $start = microtime(true);
-        $db->beginTransaction();
         $insertSQL = "INSERT INTO Users (username, password, email, role) VALUES (:username, :password, :email, 'user')";
-        
         if ($stmt = $db->prepare($insertSQL)) {
-                
             $stmt->bindParam(':username', $username, PDO::PARAM_STR);
             $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             if ($stmt->execute()) {
-                $db->commit();
                 $end = microtime(true);
                 error_log("User insertion took " . ($end - $start) . " seconds");
-
                 $subject = "ユーザー登録確認";
                 $message = "$username 様、\n\nご登録が完了しました。管理者の承認をお待ちください。";
                 //sendMail($email, $subject, $message);
                 $isSuccess = true;
-            }else{
+            } else {
                 die("ユーザー登録SQLが実行できませんでした。Code:002");
             }
-        }else{
+        } else {
             die("ユーザー登録prepareSQLが実行できませんでした。Code:001");
         }
+
         return $isSuccess;
     } catch (PDOException $e) {
         $db->rollBack();
@@ -114,17 +114,38 @@ function approveUser($userId, $approved) {
     }
 }
 
+//ログインしているユーザーを取得する
+function getLoggedinUser($db){
+    if(empty($_SESSION['username'])){
+        return false;
+    }
+    $username = $_SESSION['username'];
+    $stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND approved = ?");
+    $stmt->execute([$username,1]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if(empty($user)){
+        return false;
+    }
+    return $user;
+}
+
 // 薬局登録機能
-function registerPharmacy($name, $address, $phone, $email, $owner_id, $approved = 0) {
+function registerPharmacy($name, $address, $phone, $fax, $owner_id, $approved = 0) {
     $db = connectDb();
     try {
-        $stmt = $db->prepare("INSERT INTO Pharmacies (name, address, phone, email, owner_id, approved) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $address, $phone, $email, $owner_id, $approved]);
+        $user = getLoggedinUser($db);
+        if(!$user){
+            return "ログインしているユーザーが正しくありません";
+        }
+
+        $stmt = $db->prepare("INSERT INTO Pharmacies (name, address, phone, fax, owner_id, approved) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $address, $phone, $fax, $owner_id, $approved]);
 
         $subject = "新しい薬局の登録";
         $message = "新しい薬局が登録され、承認待ちです。";
 
-        sendMail($email, $subject, $message);
+        sendMail($user['email'], $subject, $message);
         return true;
     } catch (PDOException $e) {
         return "エラー: " . $e->getMessage();
@@ -132,16 +153,20 @@ function registerPharmacy($name, $address, $phone, $email, $owner_id, $approved 
 }
 
 // 薬局情報編集機能
-function editPharmacy($id, $name, $address, $phone, $email) {
+function editPharmacy($id, $name, $address, $phone, $fax) {
     $db = connectDb();
     try {
-        $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, email = ? WHERE id = ?");
-        $stmt->execute([$name, $address, $phone, $email, $id]);
+        $user = getLoggedinUser($db);
+        if(!$user){
+            return "ログインしているユーザーが正しくありません";
+        }
+        $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, fax = ? WHERE id = ?");
+        $stmt->execute([$name, $address, $phone, $fax, $id]);
 
         $subject = "薬局情報の更新";
         $message = "薬局の情報が更新されました。";
 
-        sendMail($email, $subject, $message);
+        sendMail($user['email'], $subject, $message);
         return true;
     } catch (PDOException $e) {
         return "エラー: " . $e->getMessage();

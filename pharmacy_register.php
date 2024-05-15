@@ -12,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $address = $_POST['address'];
     $phone = $_POST['phone'];
-    $email = $_POST['email'];
+    $fax = $_POST['fax'];
     $owner_id = $_SESSION['user_id'];
 
-    $result = registerPharmacy($name, $address, $phone, $email, $owner_id);
+    $result = registerPharmacy($name, $address, $phone, $fax, $owner_id);
     if ($result === true) {
         setFlashMessage("薬局が登録されました。承認をお待ちください。");
         header("Location: user_profile.php");
