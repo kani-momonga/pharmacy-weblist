@@ -20,10 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = $_POST['address'];
     $phone = $_POST['phone'];
     $fax = $_POST['fax'];
+    $approved = (!empty($_POST['approved'])) ? 1 : 0;
 
     try {
-        $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, fax = ? WHERE id = ?");
-        $stmt->execute([$name, $address, $phone, $fax, $pharmacyId]);
+        $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, fax = ?, approved = ? WHERE id = ?");
+        $stmt->execute([$name, $address, $phone, $fax, $approved, $pharmacyId]);
 
         // Metaデータの更新
         foreach ($_POST['meta'] as $metakey => $value) {
@@ -88,6 +89,10 @@ $metaKeys = getMetaKeys();
         <div class="mb-3">
             <label for="fax" class="form-label">FAX</label>
             <input type="text" class="form-control" id="fax" name="fax" value="<?= htmlspecialchars($pharmacy['fax'], ENT_QUOTES, 'UTF-8') ?>" required>
+        </div>
+        <div class="mb-3">
+            <label for="approved">承認済み:</label>
+            <input type="checkbox" name="approved" <?= $pharmacy['approved'] ? 'checked' : '' ?>><br>
         </div>
         
         <h2 class="mt-4">追加情報</h2>

@@ -1,6 +1,6 @@
-# pharmacy-weblist
-地域薬剤師会向け薬局の情報公開用WEBシステムです。
-このプロジェクトは、薬局情報の管理および公開を目的としたPHPシステムです。ユーザーと管理者が薬局情報を管理できる機能を提供します。
+# 薬局管理システム
+地域薬剤師会向けの薬局情報の管理および公開を目的としたPHPシステムです。ユーザーと管理者が薬局情報を管理できる機能を提供します。
+このシステムは、薬局情報の管理と公開を目的としたウェブアプリケーションです。管理者は薬局情報の追加・編集・削除を行い、一般利用者は薬局のリストを閲覧することができます。また、ユーザーは自身の薬局を登録し、管理者の承認を受けることができます。
 
 ## 特徴
 
@@ -20,107 +20,135 @@
 - Apache Webサーバー
 - PHP 7.4
 
-## インストール
+## インストール方法
 
-1. このリポジトリをクローンします。
+1. システムのファイルをWEBサーバーの公開ディレクトリに配置します。
+2. ブラウザで配置ディレクトリの `/setup` にアクセスして初回セットアップを行います。
+3. セットアップ完了後、自動的に `/admin/admin_login.php` にリダイレクトされます。
 
-    ```sh
-    git clone https://github.com/yourusername/pharmacy-management-system.git
-    cd pharmacy-management-system
-    ```
+## 初回セットアップ
 
-2. 必要なパッケージをインストールします。
+1. `/setup` にアクセスし、指示に従ってデータベース設定、管理者ユーザーの作成、メール設定を行います。
+2. セットアップが完了すると、管理者ログインページ `/admin/admin_login.php` にリダイレクトされます。
 
-    ```sh
-    sudo apt update
-    sudo apt install apache2 php7.4 php7.4-sqlite3
-    ```
+## 管理者機能
 
-3. データベースをセットアップします。
+1. 管理者ログインページ `/admin/admin_login.php` にアクセスし、ログインします。
+2. 薬局の追加・編集・削除、ユーザーの承認管理が行えます。
 
-    ```sh
-    php setup.php
-    ```
+## 一般利用者機能
 
-4. 初期設定を行います。ブラウザで `initial_setup.php` にアクセスし、指示に従って設定を完了します。
+1. 配置ディレクトリ `/` にアクセスし、公開された薬局リストを閲覧できます。
+2. ユーザー登録を行い、管理者の承認を受けることで自身の薬局を登録することができます。
 
-    ```sh
-    http://your-server-address/initial_setup.php
-    ```
+# ユーザーマニュアル
 
-## 使い方
+## システム概要
 
-### ユーザー
+このシステムは、薬局情報の閲覧および自身の薬局情報の管理を行うことができます。
 
-1. **ユーザー登録**
+## ユーザー登録
 
-    - URL: `/user_register.php`
-    - フォームにユーザー名、パスワード、メールアドレスを入力し、「Register」ボタンをクリックします。
+1. ホームページにアクセスし、ユーザー登録ページに移動します。
+2. 必要な情報を入力してユーザー登録を行います。
+3. 登録後、管理者の承認を待ちます。承認されると、ログインして自身の薬局を登録・管理できます。
 
-2. **ユーザーログイン**
+## 薬局リストの閲覧
 
-    - URL: `/user_login.php`
-    - フォームにユーザー名、パスワードを入力し、「Login」ボタンをクリックします。
+1. ホームページにアクセスし、公開されている薬局リストを閲覧できます。
+2. 薬局の詳細情報を確認するには、各薬局の「詳細を見る」ボタンをクリックします。
 
-3. **薬局登録**
+## 薬局の登録
 
-    - URL: `/pharmacy_register.php`
-    - フォームに薬局名、住所、電話番号、メールアドレスを入力し、「Register」ボタンをクリックします。
+1. 管理者に承認された後、ログインしてユーザープロフィールページにアクセスします。
+2. 「新規薬局を登録」ボタンをクリックし、薬局情報を入力して登録します。
 
-4. **薬局情報の編集**
+# 管理者マニュアル
 
-    - URL: `/pharmacy_edit.php?id={pharmacy_id}`
-    - 編集したい情報を入力し、「Update」ボタンをクリックします。
+## 管理者ログイン
 
-### 管理者
+1. `/admin/admin_login.php` にアクセスし、管理者アカウントでログインします。
 
-1. **管理者ログイン**
+## 薬局の管理
 
-    - URL: `/admin_login.php`
-    - フォームにユーザー名、パスワードを入力し、「Login」ボタンをクリックします。
+1. ログイン後、管理者ダッシュボードにアクセスします。
+2. 薬局の追加、編集が行えます。
 
-2. **管理ダッシュボード**
+## ユーザーの承認管理
 
-    - URL: `/admin_dashboard.php`
-    - ユーザーの承認や薬局情報の編集を行います。
+1. ログイン後、管理者ダッシュボードにアクセスします。
+2. 承認待ちのユーザーを確認し、承認または拒否を行います。
+
+# 開発者向けドキュメント
+
+## 環境設定
+
+このシステムは、以下の環境で動作するように設計されています。
+
+- サーバー: Linux
+- ウェブサーバー: Apache
+- PHP: 7.4以上
+- データベース: SQLite
 
 ## ディレクトリ構造
 <pre>
 /project-root
 |-- setup
-|   |-- setup.php
-|   |-- initial_setup.php
-|   |-- setup_complete.php
-|   |-- setup_message.php
-|   |-- index.php
-|   |-- setup.sql
+| |-- setup.php
+| |-- initial_setup.php
+| |-- setup_complete.php
+| |-- setup_message.php
+| |-- index.php
+| |-- setup.sql
 |-- admin
-|   |-- admin_login.php
-|   |-- admin_dashboard.php
-|   |-- admin_user_edit.php
-|   |-- pharmacy_edit.php
-|   |-- pharmacy_add.php
-|   |-- meta_keys.php
-|   |-- header.php
+| |-- admin_login.php
+| |-- admin_dashboard.php
+| |-- admin_user_edit.php
+| |-- pharmacy_edit.php
+| |-- pharmacy_add.php
+| |-- meta_keys.php
+| |-- header.php
 |-- pharmacy.db
 |-- mail_functions.php
 |-- functions.php
 |-- mail_config.json
-|-- index.php
+|-- index.php (renamed from pharmacy_list.php)
 |-- pharmacy_details.php
 |-- user_register.php
 |-- user_login.php
+|-- user_profile.php
+|-- user_pharmacy_edit.php
 |-- pharmacy_register.php
+|-- logout.php
+|-- vacuum.php
+|-- .htaccess
 </pre>
+
+## セットアップスクリプト
+
+- `setup/index.php`: セットアップのエントリーポイント。
+- `setup/setup.php`: データベースおよびメール設定の初期化。
+- `setup/initial_setup.php`: 管理者ユーザーの作成。
+
+## セキュリティ
+
+- `.htaccess` ファイルで `mail_config.json` および `pharmacy.db` へのアクセスを制限。
+
+## メール設定
+
+- `mail_config.json`: メール送信に必要な設定ファイル。
+
+## セキュリティ
+
+- `mail_config.json` と `pharmacy.db` へのアクセスを制限する `.htaccess` ファイルが含まれています。
+- .htaccessはApacheでのみ動作することに注意してください。
 
 ## ライセンス
 
-このプロジェクトはMITライセンスの下でライセンスされています。詳細については`LICENSE`ファイルを参照してください。
+このプロジェクトはMITライセンスのもとで公開されています。詳細はLICENSEファイルを参照してください。
 
-## 貢献
+## 作者
 
-貢献を歓迎します。プルリクエストを送信する前に、問題を立ててください。
-
----
-
+このプログラムに関するお問い合わせはOZNET合同会社（info@oznet.co.jp）までご連絡ください。
+設置代行やよりセキュリティの高いデータベース等を利用したサーバーのホスティング（月額5,500円）も承っております。
 これで、プロジェクトをセットアップし、使い始めるための基本的な情報が提供されました。質問やフィードバックがある場合は、お気軽にお知らせください。
