@@ -43,8 +43,7 @@ if (deleteSetupFiles()) {
 } else {
     $_SESSION['setup_message'] = "セットアップは完了しましたが、セットアップスクリプトの削除に失敗しました。";
 }
-
-unset($_SESSION['next_action']);
+$_SESSION['next_action'] = "../admin";
 header("Location: setup_message.php");
 exit;
 ?>
