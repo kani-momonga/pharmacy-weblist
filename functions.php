@@ -4,7 +4,13 @@ require_once 'mail_functions.php';
 // データベースに接続する関数
 function connectDb() {
     try {
+        // データベースを開く
+        // データベースファイルが存在しない場合は新規に作成されます
         $db = new PDO('sqlite:' . __DIR__ . '/pharmacy.db');
+        // データベースを操作するオプションを設定
+        // PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        // エラー時に例外を投げる
+        // これによってif文で異常を判定する必要がなくなります
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $db;
     } catch (PDOException $e) {
@@ -21,25 +27,38 @@ function setFlashMessage($message) {
 function registerUser($username, $password, $email) {
     $db = connectDb();
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $isSuccess = false;
     try {
         /*
         $stmt = $db->prepare("INSERT INTO Users (username, password, email, role, approved) VALUES (?, ?, ?, 'user', 0)");
         $stmt->execute([$username, $hashedPassword, $email]);
         */
-        $db->beginTransaction();
-        $stmt = $db->prepare("INSERT INTO Users (username, password, email, role, approved) VALUES (?, ?, ?, 'user', 0)");
+
         $start = microtime(true);
-        $stmt->execute([$username, $hashedPassword, $email]);
-        $end = microtime(true);
-        $db->commit();
+        $db->beginTransaction();
+        $insertSQL = "INSERT INTO Users (username, password, email, role) VALUES (:username, :password, :email, 'user')";
+        
+        if ($stmt = $db->prepare($insertSQL)) {
+                
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            if ($stmt->execute()) {
+                $db->commit();
+                $end = microtime(true);
+                error_log("User insertion took " . ($end - $start) . " seconds");
 
-        error_log("User insertion took " . ($end - $start) . " seconds");
-
-        $subject = "ユーザー登録確認";
-        $message = "$username 様、\n\nご登録が完了しました。管理者の承認をお待ちください。";
-
-        //sendMail($email, $subject, $message);
-        return true;
+                $subject = "ユーザー登録確認";
+                $message = "$username 様、\n\nご登録が完了しました。管理者の承認をお待ちください。";
+                //sendMail($email, $subject, $message);
+                $isSuccess = true;
+            }else{
+                die("ユーザー登録SQLが実行できませんでした。Code:002");
+            }
+        }else{
+            die("ユーザー登録prepareSQLが実行できませんでした。Code:001");
+        }
+        return $isSuccess;
     } catch (PDOException $e) {
         $db->rollBack();
         return "データベースエラー: " . $e->getMessage();
