@@ -31,11 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = $_POST['address'];
     $phone = $_POST['phone'];
     $fax = $_POST['fax'];
-
+    $metas = $_POST['meta'];
     try {
         $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, fax = ? WHERE id = ? AND owner_id = ?");
         $stmt->execute([$name, $address, $phone, $fax, $pharmacyId, $userId]);
 
+        if(!empty($metas)){
+            foreach ($metas as $metakey => $value) {
+                $stmt = $db->prepare("SELECT COUNT(*) FROM PharmacyMeta WHERE pharmacy_id = ? AND metakey = ?");
+                $stmt->execute([$pharmacyId, $metakey]);
+                $exists = $stmt->fetchColumn();
+    
+                if ($exists) {
+                    $stmt = $db->prepare("UPDATE PharmacyMeta SET value = ? WHERE pharmacy_id = ? AND metakey = ?");
+                    $stmt->execute([$value, $pharmacyId, $metakey]);
+                } else {
+                    $stmt = $db->prepare("INSERT INTO PharmacyMeta (pharmacy_id, metakey, value) VALUES (?, ?, ?)");
+                    $stmt->execute([$pharmacyId, $metakey, $value]);
+                }
+            }
+        }
         setFlashMessage("薬局情報が更新されました。");
         header("Location: user_profile.php");
         exit;
@@ -43,6 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "エラー: " . $e->getMessage();
     }
 }
+// Meta情報を取得
+$stmt = $db->prepare("SELECT * FROM PharmacyMeta WHERE pharmacy_id = ?");
+$stmt->execute([$pharmacyId]);
+$metaData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$metaDataAssoc = [];
+foreach ($metaData as $meta) {
+    $metaDataAssoc[$meta['metakey']] = $meta['value'];
+}
+
+// MetaKeysを取得
+$metaKeys = getMetaKeys();
 ?>
 
 <div class="container mt-4">
@@ -64,6 +90,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="fax" class="form-label">FAX番号</label>
             <input type="text" class="form-control" id="fax" name="fax" value="<?= htmlspecialchars($pharmacy['fax'], ENT_QUOTES, 'UTF-8') ?>" required>
         </div>
+        
+        <h2 class="mt-4">追加情報</h2>
+        <?php foreach ($metaKeys as $metaKey): ?>
+            <div class="mb-3">
+                <label for="meta_<?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?>" class="form-label"><?= htmlspecialchars($metaKey['description'], ENT_QUOTES, 'UTF-8') ?></label>
+                <input type="text" class="form-control" id="meta_<?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?>" name="meta[<?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?>]" value="<?= isset($metaDataAssoc[$metaKey['metakey']]) ? htmlspecialchars($metaDataAssoc[$metaKey['metakey']], ENT_QUOTES, 'UTF-8') : '' ?>">
+            </div>
+        <?php endforeach; ?>
+
         <button type="submit" class="btn btn-primary">更新</button>
     </form>
 </div>

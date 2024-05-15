@@ -49,7 +49,7 @@ function registerUser($username, $password, $email) {
                 error_log("User insertion took " . ($end - $start) . " seconds");
                 $subject = "ユーザー登録確認";
                 $message = "$username 様、\n\nご登録が完了しました。管理者の承認をお待ちください。";
-                //sendMail($email, $subject, $message);
+                sendMail($email, $subject, $message);
                 $isSuccess = true;
             } else {
                 die("ユーザー登録SQLが実行できませんでした。Code:002");
@@ -131,7 +131,7 @@ function getLoggedinUser($db){
 }
 
 // 薬局登録機能
-function registerPharmacy($name, $address, $phone, $fax, $owner_id, $approved = 0) {
+function registerPharmacy($name, $address, $phone, $fax, $owner_id, $approved = 0, $metas = array()) {
     $db = connectDb();
     try {
         $user = getLoggedinUser($db);
@@ -142,6 +142,16 @@ function registerPharmacy($name, $address, $phone, $fax, $owner_id, $approved = 
         $stmt = $db->prepare("INSERT INTO Pharmacies (name, address, phone, fax, owner_id, approved) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $address, $phone, $fax, $owner_id, $approved]);
 
+        $pharmacyId = $db->lastInsertId();
+        // Metaデータの追加
+        if(!empty($metas)){
+            foreach ($metas as $metakey => $value) {
+                if (!empty($value)) {
+                    $stmt = $db->prepare("INSERT INTO PharmacyMeta (pharmacy_id, metakey, value) VALUES (?, ?, ?)");
+                    $stmt->execute([$pharmacyId, $metakey, $value]);
+                }
+            }
+        }
         $subject = "新しい薬局の登録";
         $message = "新しい薬局が登録され、承認待ちです。";
 
@@ -153,7 +163,7 @@ function registerPharmacy($name, $address, $phone, $fax, $owner_id, $approved = 
 }
 
 // 薬局情報編集機能
-function editPharmacy($id, $name, $address, $phone, $fax) {
+function editPharmacy($id, $name, $address, $phone, $fax, $metas=array()) {
     $db = connectDb();
     try {
         $user = getLoggedinUser($db);
@@ -162,6 +172,24 @@ function editPharmacy($id, $name, $address, $phone, $fax) {
         }
         $stmt = $db->prepare("UPDATE Pharmacies SET name = ?, address = ?, phone = ?, fax = ? WHERE id = ?");
         $stmt->execute([$name, $address, $phone, $fax, $id]);
+
+        $pharmacyId = $id;
+        // Metaデータの更新
+        if(!empty($metas)){
+            foreach ($metas as $metakey => $value) {
+                $stmt = $db->prepare("SELECT COUNT(*) FROM PharmacyMeta WHERE pharmacy_id = ? AND metakey = ?");
+                $stmt->execute([$pharmacyId, $metakey]);
+                $exists = $stmt->fetchColumn();
+    
+                if ($exists) {
+                    $stmt = $db->prepare("UPDATE PharmacyMeta SET value = ? WHERE pharmacy_id = ? AND metakey = ?");
+                    $stmt->execute([$value, $pharmacyId, $metakey]);
+                } else {
+                    $stmt = $db->prepare("INSERT INTO PharmacyMeta (pharmacy_id, metakey, value) VALUES (?, ?, ?)");
+                    $stmt->execute([$pharmacyId, $metakey, $value]);
+                }
+            }
+        }
 
         $subject = "薬局情報の更新";
         $message = "薬局の情報が更新されました。";

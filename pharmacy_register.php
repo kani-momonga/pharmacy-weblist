@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = $_POST['phone'];
     $fax = $_POST['fax'];
     $owner_id = $_SESSION['user_id'];
-
-    $result = registerPharmacy($name, $address, $phone, $fax, $owner_id);
+    $metas = $_POST['meta'];
+    $result = registerPharmacy($name, $address, $phone, $fax, $owner_id, $metas);
     if ($result === true) {
         setFlashMessage("薬局が登録されました。承認をお待ちください。");
         header("Location: user_profile.php");
@@ -24,6 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = $result;
     }
 }
+
+// MetaKeysを取得
+$metaKeys = getMetaKeys();
 ?>
 
 <div class="container mt-4">
@@ -52,6 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="fax" class="form-label">FAX番号</label>
             <input type="text" class="form-control" id="fax" name="fax" required>
         </div>
+
+        <h2 class="mt-4">追加情報</h2>
+        <?php foreach ($metaKeys as $metaKey): ?>
+            <div class="mb-3">
+                <label for="meta_<?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?>" class="form-label"><?= htmlspecialchars($metaKey['description'], ENT_QUOTES, 'UTF-8') ?></label>
+                <input type="text" class="form-control" id="meta_<?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?>" name="meta[<?= htmlspecialchars($metaKey['metakey'], ENT_QUOTES, 'UTF-8') ?>]">
+            </div>
+        <?php endforeach; ?>
+
         <button type="submit" class="btn btn-success">登録</button>
     </form>
 </div>
